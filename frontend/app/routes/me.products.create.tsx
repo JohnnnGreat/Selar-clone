@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import React, { useEffect, useState } from "react";
 import { Editor } from "~/components/QuillEditor/editor.client";
 import { Input } from "~/components/ui/input";
@@ -22,6 +22,9 @@ import TabThree from "~/components/tabthree.client";
 import useProductInformation from "~/actions/products";
 import UploadImage from "~/components/image.client";
 import { Button } from "~/components/ui/button";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
+import ApiRequest from "~/lib/axios";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: stylesheetQuill }];
 
@@ -40,6 +43,7 @@ const ProductCreate = () => {
    const [textEditor, setTextEditor] = useState("");
    const [showStrikedInput, setShowStrikedInput] = useState(false);
    const { product, setProduct } = useProductInformation((state) => state);
+   const navigate = useNavigate();
 
    useEffect(() => {
       console.log(textEditor);
@@ -50,7 +54,21 @@ const ProductCreate = () => {
       setProduct({ category: value });
    };
 
-   console.log(product);
+   const handleCreateProduct = async () => {
+      console.log("working");
+      try {
+         const response = await ApiRequest.post("/products/create", product);
+
+         const productId = response.data.product.productId;
+
+         navigate(`/me/products/${productId}/edit`);
+      } catch (error) {
+         console.log(error);
+         if (error instanceof AxiosError) {
+            toast.error(error.response?.data.message);
+         }
+      }
+   };
    return (
       <div>
          <h1 className="font-bold text-[1.3rem] my-8">Add a product</h1>
@@ -168,7 +186,12 @@ const ProductCreate = () => {
                               <TabTwo />
                            </TabsContent>
                         </Tabs>
-                        <Button className="w-full mt-4">Create Product</Button>
+                        <Button
+                           onClick={handleCreateProduct}
+                           className="w-full mt-4"
+                        >
+                           Create Product
+                        </Button>
                      </div>
                   </div>
                );

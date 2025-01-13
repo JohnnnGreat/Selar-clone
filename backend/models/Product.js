@@ -18,61 +18,50 @@ const productSchema = new mongoose.Schema(
       },
       title: {
          type: String,
-         required: false,
       },
       salePrice: {
          type: String,
-         required: true,
       },
       originalPrice: {
          type: String,
-         required: true,
       },
       description: {
          type: String,
-         required: true,
       },
       category: {
          type: String,
-         required: true,
       },
       subCategory: {
          type: String,
-         required: true,
       },
       productType: {
          type: String,
-         required: true,
       },
       quantity: {
          type: Number,
-         required: true,
       },
       preorderDate: {
          type: Date,
-         required: true,
       },
       redirectUrl: {
          type: String,
-         required: true,
       },
       ctaButton: {
          type: String,
-         required: true,
       },
       hideProduct: {
          type: Boolean,
-         required: true,
+
          default: false,
       },
       preOrderProduct: {
          type: Boolean,
-         required: true,
+
          default: false,
       },
       strikePrice: {
          type: Boolean,
-         required: true,
+
          default: false,
       },
    },

@@ -1,10 +1,13 @@
 const CryptoJS = require("crypto-js");
+const Product = require("../models/Product");
 
 const createProduct = (req, res) => {
+   console.log(req.user);
    try {
       const productId = generateRandomString();
       const product = new Product({
          productId,
+         uploadedBy: req.user.id,
          ...req.body,
       });
 

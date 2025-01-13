@@ -7,7 +7,7 @@ const ApiRequest = axios.create({
 ApiRequest.interceptors.request.use(
    (config): any => {
       const AUTH_TOKEN = localStorage.getItem("AUTH_USER");
-      ApiRequest.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+      config.headers.Authorization = `Bearer ${AUTH_TOKEN}`;
 
       return config;
    },
