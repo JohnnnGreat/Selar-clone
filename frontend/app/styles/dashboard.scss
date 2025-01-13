@@ -1,0 +1,118 @@
+.dashboard {
+   height: 60vh;
+   .dashboard__index {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      height: 100%;
+      align-items: center;
+      gap: 2rem;
+      border: 1px solid rgba(128, 128, 128, 0.418);
+      padding: 2rem;
+      border-radius: 20px;
+
+      .index__opt {
+         display: flex;
+         flex-direction: column;
+
+         h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.6rem;
+            font-weight: bold;
+         }
+
+         .index__icon {
+            size: 3rem;
+         }
+
+         p {
+            color: rgba(0, 0, 0, 0.671);
+         }
+
+         .index__ctas {
+            margin-top: 1rem;
+
+            a {
+               width: 100%;
+               display: block;
+
+               padding: 0.9rem 3rem;
+
+               border-radius: 10px;
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               gap: 1rem;
+
+               &:hover {
+                  opacity: 0.8;
+               }
+
+               &:nth-child(1) {
+                  color: white;
+                  background-color: black;
+               }
+
+               &:nth-child(2) {
+                  color: black;
+               }
+            }
+         }
+      }
+
+      @media (max-width: 768px) {
+         grid-template-columns: 1fr !important;
+      }
+   }
+   @media (max-width: 768px) {
+      height: auto;
+   }
+}
+
+// product page
+
+.product__select {
+   padding: 2rem;
+
+   .product__select__text {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      font-weight: bold;
+   }
+
+   .product__select__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+
+      .grid-card {
+         border: 1px solid rgb(230, 230, 230);
+         padding: 1rem;
+         border-radius: 10px;
+
+         h1 {
+            font-weight: bold;
+            margin-top: 1rem;
+         }
+
+         p {
+            color: gray;
+         }
+
+         a {
+            border: 1px solid gray;
+            width: 100%;
+            padding: 0.8rem;
+            text-align: center;
+            margin-top: 1.2rem;
+            border-radius: 5px;
+            display: block;
+            &:hover {
+               background-color: black;
+               opacity: 0.7;
+               color: white;
+            }
+         }
+      }
+   }
+}

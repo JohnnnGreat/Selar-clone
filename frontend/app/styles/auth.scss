@@ -1,0 +1,83 @@
+.register {
+   height: 100vh;
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+
+   &__right {
+      background-color: rgb(22, 22, 22);
+   }
+
+   @media (max-width: 767px) {
+      grid-template-columns: repeat(1, 1fr);
+
+      &__right {
+         display: none;
+      }
+   }
+   &__left {
+      width: 70%;
+      margin: auto;
+      padding: 1rem;
+
+      @media (max-width: 767px) {
+      }
+
+      h1 {
+         text-align: center;
+         font-weight: bold;
+      }
+
+      .register__desc {
+         font-size: 0.8rem;
+         text-align: center;
+         margin-top: 0.6rem;
+      }
+      form {
+         margin-top: 1.34rem;
+         .form__grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+
+            .form__label {
+               font-size: 0.8rem;
+            }
+         }
+      }
+   }
+}
+
+// Utility
+.text-small {
+   font-size: 0.8rem;
+}
+
+// Login Section
+
+.login {
+   padding: 1.4rem;
+   display: flex;
+   height: 100vh;
+   align-items: center;
+   justify-content: center;
+
+   &__wrapper {
+      width: 500px;
+
+      h1 {
+         text-align: center;
+         font-weight: bold;
+         font-size: 1.3rem;
+      }
+
+      .login__desc {
+         font-size: 0.8rem;
+         text-align: center;
+         margin-top: 0.6rem;
+
+         span {
+            color: rgba(0, 0, 255, 0.726);
+         }
+      }
+   }
+}
