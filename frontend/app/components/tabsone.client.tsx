@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import useProductInformation from "~/actions/products";
+import useProductInformation, { Product } from "~/actions/products";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import {
@@ -23,7 +23,7 @@ const titles = [
    "Flexible Subscription",
 ];
 
-const TabOne = () => {
+const TabOne = ({ productInfo }: { productInfo: Product }) => {
    const [showPreorder, setShowPreorder] = useState(false);
    const [showRedirectUrl, setShowRedirectUrl] = useState(false);
    const { product, setProduct } = useProductInformation((state) => state);
@@ -35,7 +35,10 @@ const TabOne = () => {
       <div>
          <div className="mt-4">
             <Label>Product Type</Label>
-            <Select onValueChange={handleValueChange}>
+            <Select
+               onValueChange={handleValueChange}
+               value={productInfo?.productType}
+            >
                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Product Type" />
                </SelectTrigger>
@@ -54,10 +57,11 @@ const TabOne = () => {
             <Label>Quantity Available</Label>
             <Input
                type="number"
-               placeholder="Price"
+               placeholder="Product Quantity Available"
                onChange={(e) => {
-                  setProduct({ quantity: e.target.value });
+                  setProduct({ quantity: Number(e.target.value) });
                }}
+               value={productInfo?.quantity}
             />
             <p className="text-[.8rem] mt-[.6rem]">Set quantity to 0 for unlimited.</p>
          </div>
@@ -71,6 +75,7 @@ const TabOne = () => {
                   onChange={(e) => {
                      setShowPreorder(e.target.checked);
                   }}
+                  value={productInfo?.preOrderProduct}
                />
                <p className="text-[.9rem]">This is a pre-order product</p>
             </div>
@@ -114,6 +119,7 @@ const TabOne = () => {
                   onChange={(e) => {
                      setShowRedirectUrl(e.target.checked);
                   }}
+                  value={productInfo?.isRedirect}
                />
                <p className="text-[.9rem]">
                   Automatically redirect the buyer to an external URL after a purchase
@@ -128,6 +134,7 @@ const TabOne = () => {
                      onChange={(e) => {
                         setProduct({ originalPrice: e.target.value });
                      }}
+                     value={productInfo?.redirectUrl}
                      className="w-[400px]"
                   />
                   <p className="text-[.8rem] mt-[.6rem]">Set price to 0 for a free product.</p>

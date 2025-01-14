@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
-interface Product {
+export interface Product {
    imageUrl: string;
    title?: string;
    salePrice: string;
@@ -17,6 +17,7 @@ interface Product {
    hideProduct: boolean;
    preOrderProduct: boolean;
    strikePrice: boolean;
+   isRedirect: boolean;
 }
 
 interface productActions {

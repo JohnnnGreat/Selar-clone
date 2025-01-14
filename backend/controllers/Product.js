@@ -1,8 +1,7 @@
 const CryptoJS = require("crypto-js");
 const Product = require("../models/Product");
 
-const createProduct = (req, res) => {
-   console.log(req.user);
+const createProduct = async (req, res) => {
    try {
       const productId = generateRandomString();
       const product = new Product({
@@ -11,7 +10,7 @@ const createProduct = (req, res) => {
          ...req.body,
       });
 
-      product.save();
+      await product.save();
 
       return res.status(201).json({
          message: "Product created successfully",
@@ -23,8 +22,25 @@ const createProduct = (req, res) => {
    }
 };
 
+const getProductById = async (req, res) => {
+   try {
+      console.log(req.params);
+      const product = await Product.findOne({ productId: req.params.id });
+
+      console.log(product);
+      if (!product) {
+         return res.status(404).json({ message: "Product not found" });
+      }
+      return res.json(product);
+   } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error getting product" });
+   }
+};
+
 module.exports = {
    createProduct,
+   getProductById,
 };
 
 function generateRandomString() {
