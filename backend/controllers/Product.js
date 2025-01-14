@@ -20,6 +20,8 @@ const createProduct = (req, res) => {
    }
 };
 
+const deleteProduct = (req, res)=>{}
+
 module.exports = {
    createProduct,
 };
