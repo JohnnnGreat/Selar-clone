@@ -22,6 +22,8 @@ const createProduct = async (req, res) => {
    }
 };
 
+const deleteProduct = (req, res)=>{}
+
 const getProductById = async (req, res) => {
    try {
       console.log(req.params);
