@@ -1,12 +1,13 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
 import React, { useEffect, useState } from "react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
+import { ClientOnly } from "remix-utils/client-only";
 import { Editor } from "~/components/QuillEditor/editor.client";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { ClientOnly } from "remix-utils/client-only";
-import type { ActionFunctionArgs, LinksFunction } from "@remix-run/node";
-import stylesheetQuill from "react-quill/dist/quill.snow.css?url";
+import { Button } from "~/components/ui/button";
+import { Loader } from "lucide-react";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 import {
    Select,
    SelectContent,
@@ -14,29 +15,14 @@ import {
    SelectTrigger,
    SelectValue,
 } from "~/components/ui/select";
-import { productCategories } from "~/components/constant";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { productCategories } from "~/components/constant";
 import TabOne from "~/components/tabsone.client";
 import TabTwo from "~/components/tabtwo.client";
 import TabThree from "~/components/tabthree.client";
-import useProductInformation, { Product } from "~/actions/products";
 import UploadImage from "~/components/image.client";
-import { Button } from "~/components/ui/button";
-import { toast } from "sonner";
-import { AxiosError } from "axios";
+import useProductInformation, { Product } from "~/actions/products";
 import ApiRequest from "~/lib/axios";
-
-export const links: LinksFunction = () => [{ rel: "stylesheet", href: stylesheetQuill }];
-
-export async function loader({ request }: LoaderFunctionArgs) {
-   const url = new URL(request.url);
-   const productType = url.searchParams.get("type");
-
-   if (!productType) {
-      throw new Response("Invalid product type", { status: 400 });
-   }
-   return Response.json({ productType });
-}
 
 const ProductForm = ({ isEdit, productInfo }: { isEdit?: boolean; productInfo?: Product }) => {
    const loaderResponse = useLoaderData();
@@ -46,7 +32,6 @@ const ProductForm = ({ isEdit, productInfo }: { isEdit?: boolean; productInfo?: 
    const navigate = useNavigate();
 
    useEffect(() => {
-      console.log(textEditor);
       setProduct({ description: textEditor });
    }, [textEditor]);
 
@@ -55,169 +40,191 @@ const ProductForm = ({ isEdit, productInfo }: { isEdit?: boolean; productInfo?: 
    };
 
    const handleCreateProduct = async () => {
-      console.log("working");
       try {
          const response = await ApiRequest.post("/products/create", product);
-
-         const productId = response.data.product.productId;
-
-         navigate(`/me/products/${productId}/edit`);
+         navigate(`/me/products/${response.data.product.productId}/edit`);
       } catch (error) {
-         console.log(error);
          if (error instanceof AxiosError) {
             toast.error(error.response?.data.message);
          }
       }
    };
 
-   const handleUpdateProduct = (productId) => {
+   const handleUpdateProduct = (productId: string) => {
       console.log(productId);
    };
+
    return (
-      <div>
-         <h1 className="font-bold text-[1.3rem] my-8">Add a product</h1>
-         <ClientOnly fallback={<div>Loading...</div>}>
-            {() => {
-               return (
-                  <div>
-                     <div className="border rounded-[10px] p-4">
-                        <UploadImage />
-                        <div className="mt-4">
-                           <Label>Product Name*</Label>
+      <div className="mx-auto px-4 py-8">
+         <h1 className="text-2xl font-bold mb-8">{isEdit ? "Edit Product" : "Add New Product"}</h1>
+
+         <ClientOnly
+            fallback={
+               <div className="h-[500px] flex items-center justify-center flex-col bg-gray-50 rounded-lg">
+                  <Loader className="w-8 h-8 animate-spin text-primary" />
+                  <p className="mt-4 font-semibold text-gray-600">Loading Editor</p>
+               </div>
+            }
+         >
+            {() => (
+               <div className="space-y-8">
+                  {/* Main Product Information */}
+                  <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                     <div className="space-y-6">
+                        <UploadImage url={productInfo?.imageUrl} />
+
+                        <div>
+                           <Label className="text-sm font-semibold mb-1.5">Product Name*</Label>
                            <Input
                               type="text"
-                              placeholder="Product's Name"
+                              placeholder="Enter product name"
                               value={productInfo?.title}
-                              onChange={(e) => {
-                                 setProduct({ title: e.target.value });
-                              }}
+                              onChange={(e) => setProduct({ title: e.target.value })}
+                              className="mt-1"
                            />
                         </div>
-                        <div className="mt-4">
-                           <Label>Sale Price (NGN) *</Label>
+
+                        <div>
+                           <Label className="text-sm font-semibold mb-1.5">Sale Price (NGN)*</Label>
                            <Input
                               type="text"
-                              placeholder="Price"
-                              onChange={(e) => {
-                                 setProduct({ salePrice: e.target.value });
-                              }}
+                              placeholder="Enter price"
                               value={productInfo?.salePrice}
+                              onChange={(e) => setProduct({ salePrice: e.target.value })}
+                              className="mt-1"
                            />
-                           <p className="text-[.8rem] mt-[.6rem]">
+                           <p className="text-sm text-gray-500 mt-2">
                               Set price to 0 for a free product.
                            </p>
                         </div>
-                        <p className="mt-4 bg-[#f7f7f7] border-l-[2px] pl-8 py-4 text-[.8rem]">
-                           By default, you set the price in your local currency and we automatically
-                           convert the amount to other currencies on your store page, but if you'd
-                           like to set the fixed price for other currencies, e.g USD?, you can
-                           enable this option on your currency settings page.
-                        </p>
-                        <div className="mt-4">
-                           <div className="flex items-center gap-x-4">
-                              {" "}
-                              <Input
-                                 type="checkbox"
-                                 placeholder="Price"
-                                 className="size-4"
-                                 onChange={(e) => {
-                                    setShowStrikedInput(e.target.checked);
-                                 }}
-                                 value={productInfo?.strikePrice}
-                              />
-                              <p className="text-[.9rem]">Show striked out original price</p>
-                           </div>
-                        </div>
-                        {showStrikedInput && (
-                           <div className="mt-4">
-                              <Label>Original price (NGN) *</Label>
-                              <Input
-                                 type="text"
-                                 placeholder="Price"
-                                 onChange={(e) => {
-                                    setProduct({ originalPrice: e.target.value });
-                                 }}
-                                 value={productInfo?.originalPrice}
-                              />
-                              <p className="text-[.8rem] mt-[.6rem]">
-                                 Set price to 0 for a free product.
-                              </p>
-                           </div>
-                        )}
 
-                        <Editor
-                           name="editor"
-                           theme="snow"
-                           placeholder="Write description"
-                           onChange={setTextEditor}
-                           value={textEditor}
-                        />
-
-                        <div className="mt-[1rem]">
-                           <h1 className="uppercase font-bold">
-                              Selar Discovery (Categorize your product)
-                           </h1>
-                           <p className=" bg-[#f7f7f7] border-l-[2px] pl-8 py-4 text-[.8rem]">
-                              Categorize your product with our predefined list of categories; this
-                              helps with SEO (search engine optimization), and will also help people
-                              find your product easily on our Affiliate Network.
+                        <div className="bg-gray-50 border-l-4 border-primary p-4 rounded">
+                           <p className="text-sm text-gray-600">
+                              By default, prices are set in your local currency and automatically
+                              converted. Visit currency settings to configure fixed prices for other
+                              currencies.
                            </p>
                         </div>
-                        <div className="mt-[1rem]">
-                           <Label>Category</Label>
-                           <Select
-                              onValueChange={handleValueChange}
-                              value={productInfo?.category}
-                           >
-                              <SelectTrigger className="w-full">
-                                 <SelectValue placeholder="Category" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                 {productCategories.map((category) => (
-                                    <SelectItem value={category}>{category}</SelectItem>
-                                 ))}
-                              </SelectContent>
-                           </Select>
+
+                        <div className="flex items-center space-x-3">
+                           <Input
+                              type="checkbox"
+                              className="h-4 w-4"
+                              checked={showStrikedInput}
+                              onChange={(e) => setShowStrikedInput(e.target.checked)}
+                           />
+                           <Label className="text-sm">Show striked out original price</Label>
+                        </div>
+
+                        {showStrikedInput && (
+                           <div>
+                              <Label className="text-sm font-semibold mb-1.5">
+                                 Original Price (NGN)*
+                              </Label>
+                              <Input
+                                 type="text"
+                                 placeholder="Enter original price"
+                                 value={productInfo?.originalPrice}
+                                 onChange={(e) => setProduct({ originalPrice: e.target.value })}
+                                 className="mt-1"
+                              />
+                           </div>
+                        )}
+
+                        <div className="pt-4">
+                           <Label className="text-sm font-semibold mb-3">Product Description</Label>
+                           <Editor
+                              name="editor"
+                              theme="snow"
+                              placeholder="Write your product description here..."
+                              onChange={setTextEditor}
+                              value={textEditor}
+                              className="mt-2"
+                           />
                         </div>
                      </div>
-                     <div className="mt-[1rem] border rounded-[10px] p-4">
-                        <Tabs
-                           defaultValue="more"
-                           className="w-full"
-                        >
-                           <TabsList>
-                              <TabsTrigger value="more">More Details</TabsTrigger>
-                              <TabsTrigger value="upsell">Upsell and Cross Sells</TabsTrigger>
-                              <TabsTrigger value="advance">Advance Options</TabsTrigger>
-                           </TabsList>
-                           <TabsContent value="more">
-                              <TabOne productInfo={productInfo} />
-                           </TabsContent>
-                           <TabsContent value="upsell">
-                              <TabTwo />
-                           </TabsContent>
-                        </Tabs>
-                        {isEdit ? (
-                           <Button
-                              onClick={() => {
-                                 handleUpdateProduct(productInfo?.productId);
-                              }}
-                              className="w-full mt-4"
-                           >
-                              Update Product
-                           </Button>
-                        ) : (
-                           <Button
-                              onClick={handleCreateProduct}
-                              className="w-full mt-4"
-                           >
-                              Create Product
-                           </Button>
-                        )}
+                  </section>
+
+                  {/* Product Category */}
+                  <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                     <h2 className="text-lg font-semibold mb-4">Product Category</h2>
+                     <div className="bg-gray-50 border-l-4 border-primary p-4 rounded mb-6">
+                        <p className="text-sm text-gray-600">
+                           Categorizing your product improves SEO and visibility in our Affiliate
+                           Network.
+                        </p>
                      </div>
-                  </div>
-               );
-            }}
+                     <Select
+                        onValueChange={handleValueChange}
+                        value={productInfo?.category}
+                     >
+                        <SelectTrigger className="w-full">
+                           <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                           {productCategories.map((category) => (
+                              <SelectItem
+                                 key={category}
+                                 value={category}
+                              >
+                                 {category}
+                              </SelectItem>
+                           ))}
+                        </SelectContent>
+                     </Select>
+                  </section>
+
+                  {/* Additional Details */}
+                  <section className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                     <Tabs
+                        defaultValue="more"
+                        className="w-full"
+                     >
+                        <TabsList className="mb-6">
+                           <TabsTrigger
+                              value="more"
+                              className="px-4 py-2"
+                           >
+                              More Details
+                           </TabsTrigger>
+                           <TabsTrigger
+                              value="upsell"
+                              className="px-4 py-2"
+                           >
+                              Upsell & Cross Sells
+                           </TabsTrigger>
+                           <TabsTrigger
+                              value="advance"
+                              className="px-4 py-2"
+                           >
+                              Advanced Options
+                           </TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="more">
+                           <TabOne productInfo={productInfo} />
+                        </TabsContent>
+                        <TabsContent value="upsell">
+                           <TabTwo productInfo={productInfo} />
+                        </TabsContent>
+                        <TabsContent value="advance">
+                           <TabThree productInfo={productInfo} />
+                        </TabsContent>
+                     </Tabs>
+                  </section>
+
+                  <Button
+                     onClick={
+                        isEdit
+                           ? () => handleUpdateProduct(productInfo?.productId)
+                           : handleCreateProduct
+                     }
+                     className="w-full py-3 text-lg font-medium"
+                  >
+                     {isEdit ? "Update Product" : "Create Product"}
+                  </Button>
+               </div>
+            )}
          </ClientOnly>
       </div>
    );

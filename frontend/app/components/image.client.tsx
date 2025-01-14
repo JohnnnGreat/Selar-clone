@@ -12,8 +12,10 @@ const client = new Client()
 
 const storage = new Storage(client);
 
-const UploadImage = () => {
-   const [imageUrl, setImageUrl] = React.useState("");
+const UploadImage = ({ url }: { url: string | undefined }) => {
+   const [imageUrl, setImageUrl] = React.useState(url);
+
+   console.log(url);
    const [imageUploading, setImageUploading] = React.useState(false);
    const { product, setProduct } = useProductInformation((state) => state);
 

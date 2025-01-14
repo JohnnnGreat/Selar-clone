@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 export interface Product {
+   productId: string | undefined;
    imageUrl: string;
    title?: string;
    salePrice: string;
@@ -18,6 +19,8 @@ export interface Product {
    preOrderProduct: boolean;
    strikePrice: boolean;
    isRedirect: boolean;
+   crossSell: any[];
+   upSell: any[];
 }
 
 interface productActions {
