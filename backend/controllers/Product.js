@@ -22,7 +22,10 @@ const createProduct = async (req, res) => {
    }
 };
 
-const deleteProduct = (req, res)=>{}
+// const MONGO_URI: string =
+//    process.env.MONGO_URI ||
+//    "mongodb+srv://johnossai20:wJH8hmNOuFDJAUGX@cluster0.becdu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const deleteProduct = (req, res) => {};
 
 const getProductById = async (req, res) => {
    try {
