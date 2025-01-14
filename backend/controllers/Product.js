@@ -25,14 +25,40 @@ const createProduct = async (req, res) => {
 // const MONGO_URI: string =
 //    process.env.MONGO_URI ||
 //    "mongodb+srv://johnossai20:wJH8hmNOuFDJAUGX@cluster0.becdu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-const deleteProduct = (req, res) => {};
+const deleteProduct = async (req, res) => {
+   try{
+      const {id}=req.params.id;
+      const deleteProduct =  await Product.findOneAndDelete({productId:id});
+
+      return res.status(200).json({
+         message:"Product Deleted Successfully"
+      })
+   }catch(error){
+      res.status(500).json({ message: "Error deleting product" });
+   }
+};
+
+const updateProduct = async(req, res)=>{
+   try {
+      const {id}=req.params.id;
+
+      const updateProduct = await Product.findOneAndUpdate(req.body, {new:true})
+
+      return res.status(200).json({
+         success:true,
+         message:"Updated Successfully"
+
+      })
+   }catch(error){
+      res.status(500).json({ message: "Error updating product" });
+   }
+}
 
 const getProductById = async (req, res) => {
    try {
       console.log(req.params);
       const product = await Product.findOne({ productId: req.params.id });
 
-      console.log(product);
       if (!product) {
          return res.status(404).json({ message: "Product not found" });
       }
@@ -46,6 +72,8 @@ const getProductById = async (req, res) => {
 module.exports = {
    createProduct,
    getProductById,
+   updateProduct,
+   deleteProduct
 };
 
 function generateRandomString() {
