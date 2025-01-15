@@ -13,8 +13,11 @@ import {
 import { Button } from "~/components/ui/button";
 import { Search, Filter, Plus } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
-import { Link, redirect, useNavigate } from "@remix-run/react";
+import { Link, redirect, useLoaderData, useNavigate } from "@remix-run/react";
 import { toast } from "sonner";
+import { DataTable } from "~/components/Table/data-table.client";
+import { columns } from "~/components/Table/columns.client";
+import { ClientOnly } from "remix-utils/client-only";
 
 export const productTypes = [
    "All",
@@ -38,14 +41,15 @@ export const loader = async ({ request }: any) => {
    const productType = url.searchParams.get("productType") || "";
    try {
       const api = createServerApi(request);
-      if (productName && category && productType) {
+      if (productName || category || productType) {
          const { data } = await api.get(
             `/products/user/filter?productName=${productName}&category=${category}&productType=${productType}`,
          );
-         console.log(data);
-         return Response.json({ products: data });
+         console.log("f", data);
+         return Response.json({ products: data.data });
       } else {
          const { data } = await api.get("/products/user/self");
+
          return Response.json({ products: data });
       }
    } catch (error) {
@@ -82,7 +86,7 @@ const Products = () => {
       e.preventDefault();
       const { productName, productType, category } = filters;
 
-      if (!productName || !productType || !category) {
+      if (!productName && !productType && !category) {
          return toast.error("Atleast one field must be specified");
       }
       navigate(
@@ -95,6 +99,8 @@ const Products = () => {
          handleSubmit(e);
       }
    };
+
+   const { products } = useLoaderData();
 
    return (
       <div className="p-6 mx-auto space-y-6">
@@ -175,6 +181,19 @@ const Products = () => {
                   </div>
                </form>
             </CardContent>
+         </Card>
+
+         <Card>
+            <ClientOnly>
+               {() => {
+                  return (
+                     <DataTable
+                        columns={columns}
+                        data={products}
+                     />
+                  );
+               }}
+            </ClientOnly>
          </Card>
       </div>
    );

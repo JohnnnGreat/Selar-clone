@@ -82,14 +82,16 @@ const getUserProducts = async (req, res) => {
 };
 
 const getProductsByFilter = async (req, res) => {
+   const userId = req.user.id;
    try {
       const { productName, category, productType } = req.query;
 
-      
-      const queryObj = {};
+      const queryObj = {
+         uploadedBy: userId,
+      };
 
       if (productName) {
-         queryObj.title = { $regex: productName, $options: 'i' }; // Case-insensitive search
+         queryObj.title = { $regex: productName, $options: "i" }; // Case-insensitive search
       }
 
       if (category) {
@@ -101,21 +103,21 @@ const getProductsByFilter = async (req, res) => {
       }
 
       const query = Product.find(queryObj);
-      
+
       const products = await query.exec();
 
-      // Send response
+      console.log(query, products);
+
       res.status(200).json({
          success: true,
          count: products.length,
-         data: products
+         data: products,
       });
-
    } catch (error) {
       console.error(error);
-      res.status(500).json({ 
+      res.status(500).json({
          success: false,
-         message: "Error getting products by filter" 
+         message: "Error getting products by filter",
       });
    }
 };
