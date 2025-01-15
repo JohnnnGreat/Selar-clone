@@ -1,4 +1,5 @@
 import { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 
 import stylesheetQuill from "react-quill/dist/quill.snow.css?url";
 
@@ -16,10 +17,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
    return Response.json({ productType });
 }
 
+interface ILoader {
+   productType: string;
+}
 const ProductCreate = () => {
+   const { productType } = useLoaderData<ILoader>();
+
    return (
       <>
-         <ProductForm />
+         <ProductForm productType={productType} />
       </>
    );
 };

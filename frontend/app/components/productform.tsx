@@ -23,14 +23,24 @@ import TabThree from "~/components/tabthree.client";
 import UploadImage from "~/components/image.client";
 import useProductInformation, { Product } from "~/actions/products";
 import ApiRequest from "~/lib/axios";
+import _ from "lodash";
 
-const ProductForm = ({ isEdit, productInfo }: { isEdit?: boolean; productInfo?: Product }) => {
+const ProductForm = ({
+   isEdit,
+   productInfo,
+   productType,
+}: {
+   isEdit?: boolean;
+   productInfo?: Product;
+   productType?: string;
+}) => {
    const loaderResponse = useLoaderData();
    const [textEditor, setTextEditor] = useState(productInfo?.description);
    const [showStrikedInput, setShowStrikedInput] = useState(false);
-   const { product, setProduct } = useProductInformation((state) => state);
+   const { product, nullifyProduct, setProduct } = useProductInformation((state) => state);
    const navigate = useNavigate();
 
+   const [isCreatingProduct, setIsCreatingProduct] = useState(false);
    useEffect(() => {
       setProduct({ description: textEditor });
    }, [textEditor]);
@@ -40,13 +50,20 @@ const ProductForm = ({ isEdit, productInfo }: { isEdit?: boolean; productInfo?: 
    };
 
    const handleCreateProduct = async () => {
+      setIsCreatingProduct(true);
       try {
          const response = await ApiRequest.post("/products/create", product);
+
+         toast.success("Product Created Successfully");
+
+         nullifyProduct();
          navigate(`/me/products/${response.data.product.productId}/edit`);
       } catch (error) {
          if (error instanceof AxiosError) {
             toast.error(error.response?.data.message);
          }
+      } finally {
+         setIsCreatingProduct(false);
       }
    };
 
@@ -78,7 +95,7 @@ const ProductForm = ({ isEdit, productInfo }: { isEdit?: boolean; productInfo?: 
                            <Input
                               type="text"
                               placeholder="Enter product name"
-                              value={productInfo?.title}
+                              value={product?.title || productInfo?.title}
                               onChange={(e) => setProduct({ title: e.target.value })}
                               className="mt-1"
                            />
@@ -111,7 +128,10 @@ const ProductForm = ({ isEdit, productInfo }: { isEdit?: boolean; productInfo?: 
                               type="checkbox"
                               className="h-4 w-4"
                               checked={showStrikedInput}
-                              onChange={(e) => setShowStrikedInput(e.target.checked)}
+                              onChange={(e) => {
+                                 setShowStrikedInput(e.target.checked);
+                                 setProduct({ strikePrice: e.target.checked });
+                              }}
                            />
                            <Label className="text-sm">Show striked out original price</Label>
                         </div>
@@ -131,7 +151,7 @@ const ProductForm = ({ isEdit, productInfo }: { isEdit?: boolean; productInfo?: 
                            </div>
                         )}
 
-                        <div className="pt-4">
+                        <div className="pt-4 mt-2">
                            <Label className="text-sm font-semibold mb-3">Product Description</Label>
                            <Editor
                               name="editor"
@@ -139,7 +159,6 @@ const ProductForm = ({ isEdit, productInfo }: { isEdit?: boolean; productInfo?: 
                               placeholder="Write your product description here..."
                               onChange={setTextEditor}
                               value={textEditor}
-                              className="mt-2"
                            />
                         </div>
                      </div>
@@ -202,7 +221,10 @@ const ProductForm = ({ isEdit, productInfo }: { isEdit?: boolean; productInfo?: 
                         </TabsList>
 
                         <TabsContent value="more">
-                           <TabOne productInfo={productInfo} />
+                           <TabOne
+                              productInfo={productInfo}
+                              productType={productType}
+                           />
                         </TabsContent>
                         <TabsContent value="upsell">
                            <TabTwo productInfo={productInfo} />
@@ -219,9 +241,10 @@ const ProductForm = ({ isEdit, productInfo }: { isEdit?: boolean; productInfo?: 
                            ? () => handleUpdateProduct(productInfo?.productId)
                            : handleCreateProduct
                      }
-                     className="w-full py-3 text-lg font-medium"
+                     className="w-full py-3 font-medium"
                   >
                      {isEdit ? "Update Product" : "Create Product"}
+                     {isCreatingProduct && <Loader className="text-white w-4 y-4 animate-spin" />}
                   </Button>
                </div>
             )}
@@ -230,4 +253,4 @@ const ProductForm = ({ isEdit, productInfo }: { isEdit?: boolean; productInfo?: 
    );
 };
 
-export default ProductForm;
+export default React.memo(ProductForm);

@@ -95,4 +95,4 @@ const UploadImage = ({ url }: { url: string | undefined }) => {
    );
 };
 
-export default UploadImage;
+export default React.memo(UploadImage);

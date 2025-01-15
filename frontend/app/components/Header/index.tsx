@@ -8,8 +8,11 @@ import {
    DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Button } from "~/components/ui/button";
+import SideTop from "./SideTopHeader.client";
+import MenuSide from "./menu.client";
 
 const DashboardHeader = () => {
+   const [openSide, setOpenSide] = useState(false);
    return (
       <header className="border-b bg-white">
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -20,11 +23,7 @@ const DashboardHeader = () => {
                      href="/"
                      className="flex items-center"
                   >
-                     <img
-                        src="/selar-logo.png"
-                        alt="Selar"
-                        className="h-8 w-auto"
-                     />
+                     MArketly
                   </a>
                </div>
 
@@ -69,10 +68,31 @@ const DashboardHeader = () => {
                   <Button
                      variant="ghost"
                      size="icon"
-                     className="md:hidden"
+                     onClick={() => {
+                        setOpenSide(!openSide);
+                     }}
                   >
                      <Menu className="h-6 w-6" />
                   </Button>
+                  {openSide && (
+                     <div
+                        onClick={() => {
+                           setOpenSide(false);
+                           document.body.style.overflow = "auto";
+                        }}
+                        className="w-full h-screen bg-[#000]/10 absolute left-0 top-0"
+                     ></div>
+                  )}
+                  {openSide && (
+                     <div
+                        className={`bg-white transition absolute p-4 top-0 h-screen w-0 left-0 z-20 ${
+                           openSide && "w-[400px!important] transition-all"
+                        }`}
+                     >
+                        <SideTop />
+                        <MenuSide />
+                     </div>
+                  )}
                </div>
             </div>
          </div>

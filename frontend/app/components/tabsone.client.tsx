@@ -16,7 +16,7 @@ import {
 } from "~/components/ui/select";
 import { cn } from "~/lib/utils";
 
-const productTypes = [
+export const productTypes = [
    "Physical Product",
    "Digital Product",
    "With Improved Features",
@@ -29,12 +29,34 @@ const productTypes = [
    "Flexible Subscription",
 ];
 
-const TabOne = ({ productInfo }: { productInfo: Product | undefined }) => {
+const TabOne = ({
+   productInfo,
+   productType,
+}: {
+   productType: string;
+   productInfo: Product | undefined;
+}) => {
    const [showPreorder, setShowPreorder] = useState(false);
    const [showRedirectUrl, setShowRedirectUrl] = useState(false);
    const { product, setProduct } = useProductInformation((state) => state);
    const [date, setDate] = React.useState<Date>();
 
+   const typeMapper: any = {
+      "physical-product": "Physical Product",
+      "digital-product": "Digital Product",
+      "with-improved-features": "With Improved Features",
+      ticket: "Ticket",
+      subscription: "Subscription",
+      service: "Service",
+      "course-hosted-on-selar": "Course (Hosted on Selar)",
+      "stream-online-only-video-audio": "Stream Online Only Video/Audio",
+      "membership-course-hosted-on-selar-beta": "Membership Course (Hosted on Selar) [BETA]",
+   };
+
+   React.useEffect(() => {
+      setProduct({ preorderDate: date });
+   }, [date]);
+   const prodTypeConv = typeMapper[productType];
    return (
       <div className="space-y-8">
          {/* Product Type Section */}
@@ -42,7 +64,7 @@ const TabOne = ({ productInfo }: { productInfo: Product | undefined }) => {
             <Label className="text-sm font-semibold">Product Type</Label>
             <Select
                onValueChange={(value) => setProduct({ productType: value })}
-               value={productInfo?.productType}
+               value={productInfo?.productType || prodTypeConv}
             >
                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Product Type" />
@@ -82,7 +104,10 @@ const TabOne = ({ productInfo }: { productInfo: Product | undefined }) => {
                <Input
                   type="checkbox"
                   className="h-4 w-4"
-                  onChange={(e) => setShowPreorder(e.target.checked)}
+                  onChange={(e) => {
+                     setShowPreorder(e.target.checked);
+                     setProduct({ preOrderProduct: e.target.checked });
+                  }}
                   checked={productInfo?.preOrderProduct}
                />
                <Label className="text-sm">This is a pre-order product</Label>
@@ -140,7 +165,10 @@ const TabOne = ({ productInfo }: { productInfo: Product | undefined }) => {
                <Input
                   type="checkbox"
                   className="h-4 w-4"
-                  onChange={(e) => setShowRedirectUrl(e.target.checked)}
+                  onChange={(e) => {
+                     setShowRedirectUrl(e.target.checked);
+                     setProduct({ isRedirect: e.target.checked });
+                  }}
                   checked={productInfo?.isRedirect}
                />
                <Label className="text-sm">
@@ -165,4 +193,4 @@ const TabOne = ({ productInfo }: { productInfo: Product | undefined }) => {
    );
 };
 
-export default TabOne;
+export default React.memo(TabOne);

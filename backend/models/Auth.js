@@ -20,6 +20,12 @@ const AuthSchema = mongoose.Schema({
       default: false,
    },
 
+   plan: {
+      type: String,
+      enum: ["basic", "standard", "premium"],
+      required: true,
+      default: "basic",
+   },
    accountInformation: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "AccountInformation",

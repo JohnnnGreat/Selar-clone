@@ -21,6 +21,7 @@ import ApiRequest from "~/lib/axios";
 import { Loader } from "lucide-react";
 import { useCookies } from "react-cookie";
 import Cookies from "js-cookie";
+import useUserInformation from "~/actions/user";
 
 const LoginComponent = () => {
    const form = useForm<z.infer<typeof loginSchema>>({
@@ -29,8 +30,8 @@ const LoginComponent = () => {
    });
    const navigate = useNavigate();
    const [transition, startTransition] = useTransition();
-   const [cookies, setCookie, removeCookie] = useCookies(["authentication"]);
 
+   const { login } = useUserInformation((state) => state);
    const isSubmitting = transition;
    async function onSubmit(values: z.infer<typeof loginSchema>) {
       startTransition(async () => {
@@ -41,7 +42,14 @@ const LoginComponent = () => {
             };
             const { data } = await ApiRequest.post("/authorization/login", body);
 
-            localStorage.setItem("AUTH_USER", data.user.token);
+            Cookies.set("auth-tokend", data.user.token, {
+               expires: 30, // expires in 30 days
+               secure: process.env.NODE_ENV === "production",
+               sameSite: "lax",
+            });
+
+            login(data?.user);
+
             toast.success(data.status);
 
             navigate("/me/dashboard");

@@ -28,6 +28,7 @@ interface productActions {
    product: Product | null;
    setProduct: (options: Partial<Product>) => void;
    updateProduct: (options: Partial<Product>) => void;
+   nullifyProduct: () => void;
 }
 const useProductInformation = create<productActions>()(
    immer((set) => ({
@@ -46,6 +47,12 @@ const useProductInformation = create<productActions>()(
          });
       },
       updateProduct: (option: Partial<Product>) => {},
+
+      nullifyProduct: () => {
+         set((state) => {
+            state.product = null;
+         });
+      },
    })),
 );
 
