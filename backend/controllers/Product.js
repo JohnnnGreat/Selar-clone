@@ -122,11 +122,31 @@ const getProductsByFilter = async (req, res) => {
    }
 };
 
+const getProductMain = async (req, res) => {
+   try {
+      const { id } = req.params;
+      const product = await Product.findOne({
+         productId: id,
+      });
+
+      return res.status(200).json({
+         message: "Product Fetched Successfully",
+         product,
+      });
+   } catch (error) {
+      console.error(error);
+      res.status(500).json({
+         success: false,
+         message: "Error getting product",
+      });
+   }
+};
 module.exports = {
    createProduct,
    getProductById,
    updateProduct,
    deleteProduct,
+   getProductMain,
    getUserProducts,
    getProductsByFilter,
 };
