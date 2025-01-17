@@ -43,7 +43,7 @@ const LoginComponent = () => {
             const { data } = await ApiRequest.post("/authorization/login", body);
 
             Cookies.set("auth-tokend", data.user.token, {
-               expires: 30, // expires in 30 days
+               expires: 30,
                secure: process.env.NODE_ENV === "production",
                sameSite: "lax",
             });
@@ -66,7 +66,7 @@ const LoginComponent = () => {
    return (
       <div className="login">
          <div className="login__wrapper">
-            <h1>Create your Marketly Account</h1>
+            <h1>Login to your Marketly Account</h1>
             <p className="login__desc">
                Already have an accont? <Link to="/register">Create new account</Link>
             </p>
@@ -111,26 +111,10 @@ const LoginComponent = () => {
                      )}
                   />
 
-                  <div className="flex gap-3">
-                     <Input
-                        placeholder="**********"
-                        className="size-6 bg-[#5a0b4d]"
-                        type="checkbox"
-                        onChange={(e) => setIsConsentAgreed(e.target.checked)}
-                     />
-                     <p className="text-small">
-                        Signing up for a Selar account means you agree to our privacy policy and
-                        terms & conditions
-                     </p>
-                  </div>
                   <Button
                      className="w-full"
                      type="submit"
-                     disabled={
-                        isSubmitting ||
-                        !isConsentAgreed ||
-                        Object.keys(form.formState.errors).length > 0
-                     }
+                     disabled={isSubmitting || Object.keys(form.formState.errors).length > 0}
                   >
                      {isSubmitting && (
                         <Loader

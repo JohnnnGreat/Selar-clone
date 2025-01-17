@@ -1,4 +1,4 @@
-import { json, LinksFunction } from "@remix-run/node";
+import { json, LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { ClientOnly } from "remix-utils/client-only";
 import ProductForm from "~/components/productform";
@@ -10,12 +10,10 @@ import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { toast } from "sonner";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: stylesheetQuill }];
-export async function loader({ params }) {
+export async function loader({ params }: LoaderFunctionArgs) {
    try {
       const { productId } = params;
       const { data } = await ServerApiRequest.get(`/products/${productId}`);
-
-      console.log("data", data);
 
       return Response.json({ productId, product: data });
    } catch (error) {

@@ -1,49 +1,248 @@
 import type { MetaFunction } from "@remix-run/node";
 
+import { Button } from "~/components/ui/button";
+import {
+   ArrowRight,
+   ShoppingBag,
+   Globe,
+   CreditCard,
+   BarChart,
+   ShieldCheck,
+   Rocket,
+} from "lucide-react";
+
 export const meta: MetaFunction = () => {
    return [{ title: "New Remix App" }, { name: "description", content: "Welcome to Remix!" }];
 };
 
+const features = [
+   {
+      title: "Global Reach",
+      description:
+         "Sell to customers worldwide with multi-currency support and localized payment methods.",
+      icon: <Globe className="h-6 w-6" />,
+   },
+   {
+      title: "Instant Payouts",
+      description:
+         "Get paid instantly when you make a sale, with support for multiple payment gateways.",
+      icon: <CreditCard className="h-6 w-6" />,
+   },
+   {
+      title: "Sales Analytics",
+      description:
+         "Track your performance with detailed analytics and insights about your customers.",
+      icon: <BarChart className="h-6 w-6" />,
+   },
+   {
+      title: "Secure Platform",
+      description: "Your products and customer data are protected with enterprise-grade security.",
+      icon: <ShieldCheck className="h-6 w-6" />,
+   },
+   {
+      title: "Digital Storefront",
+      description: "Create a professional storefront with customizable themes and branding.",
+      icon: <ShoppingBag className="h-6 w-6" />,
+   },
+   {
+      title: "Quick Setup",
+      description: "Get started in minutes with our intuitive dashboard and setup wizard.",
+      icon: <Rocket className="h-6 w-6" />,
+   },
+];
+
+const stats = [
+   { value: "10K+", label: "Active Creators" },
+   { value: "$2M+", label: "Monthly Sales" },
+   { value: "50K+", label: "Products Sold" },
+   { value: "99.9%", label: "Uptime" },
+];
+
+const footerSections = [
+   {
+      title: "Platform",
+      links: ["Features", "Pricing", "Integrations", "Enterprise"],
+   },
+   {
+      title: "Company",
+      links: ["About", "Careers", "Blog", "Press"],
+   },
+   {
+      title: "Resources",
+      links: ["Documentation", "Help Center", "Guides", "API Status"],
+   },
+   {
+      title: "Legal",
+      links: ["Privacy", "Terms", "Security", "Cookies"],
+   },
+];
+
 export default function Index() {
    return (
-      <div className="flex h-screen items-center justify-center">
-         <div className="flex flex-col items-center gap-16">
-            <header className="flex flex-col items-center gap-9">
-               <h1 className="leading text-2xl font-bold text-gray-800 dark:text-gray-100">
-                  Welcome to <span className="sr-only">Remix</span>
-               </h1>
-               <div className="h-[144px] w-[434px]">
-                  <img
-                     src="/logo-light.png"
-                     alt="Remix"
-                     className="block w-full dark:hidden"
-                  />
-                  <img
-                     src="/logo-dark.png"
-                     alt="Remix"
-                     className="hidden w-full dark:block"
-                  />
-               </div>
-            </header>
-            <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
-               <p className="leading-6 text-gray-700 dark:text-gray-200">What&apos;s next?</p>
-               <ul>
-                  {resources.map(({ href, text, icon }) => (
-                     <li key={href}>
-                        <a
-                           className="group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500"
-                           href={href}
-                           target="_blank"
-                           rel="noreferrer"
+      <div className="min-h-screen bg-white">
+         {/* Hero Section */}
+         <header className="relative overflow-hidden bg-black text-white">
+            <div
+               style={{ backgroundImage: "url('/grid.svg')" }}
+               className="absolute inset-0 [mask-image:linear-gradient(to_bottom,white,transparent)] opacity-20"
+            ></div>
+            <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+               <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-8">
+                  <div className="max-w-lg">
+                     <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
+                        Turn Your Digital Products into Revenue
+                     </h1>
+                     <p className="mt-6 text-lg leading-8 text-gray-300">
+                        Launch your digital storefront in minutes. Sell courses, ebooks, software,
+                        and more with a powerful, minimalist platform.
+                     </p>
+                     <div className="mt-10 flex gap-x-6">
+                        <Button
+                           size="lg"
+                           className="bg-white text-black hover:bg-gray-100"
                         >
-                           {icon}
-                           {text}
-                        </a>
-                     </li>
+                           <a
+                              href="/register"
+                              className="flex items-center gap-x-6"
+                           >
+                              Start Selling Now
+                              <ArrowRight className="ml-2 h-4 w-4" />
+                           </a>
+                        </Button>
+                        <Button
+                           variant="outline"
+                           className="text-black border-white hover:bg-white/10"
+                        >
+                           <a
+                              href=""
+                              className="flex items-center gap-x-6"
+                           >
+                              View Demo Store
+                           </a>
+                        </Button>
+                     </div>
+                  </div>
+                  <div className="relative">
+                     <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
+                     </div>
+                     <img
+                        src="/api/placeholder/600/400"
+                        alt="Dashboard preview"
+                        className="relative rounded-xl shadow-2xl border border-gray-800"
+                     />
+                  </div>
+               </div>
+            </div>
+         </header>
+
+         {/* Features Section */}
+         <section className="py-24 bg-white">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+               <div className="text-center">
+                  <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                     Everything You Need to Succeed
+                  </h2>
+                  <p className="mt-4 text-lg text-gray-600">
+                     Built for creators, designed for growth
+                  </p>
+               </div>
+
+               <div className="mt-20 grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
+                  {features.map((feature) => (
+                     <div
+                        key={feature.title}
+                        className="group relative"
+                     >
+                        <div className="absolute inset-0 rounded-2xl bg-white border border-gray-100 shadow-sm transition-colors group-hover:border-black"></div>
+                        <div className="relative p-8">
+                           <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-black text-white">
+                              {feature.icon}
+                           </div>
+                           <h3 className="mt-6 text-xl font-semibold">{feature.title}</h3>
+                           <p className="mt-2 text-gray-600">{feature.description}</p>
+                        </div>
+                     </div>
                   ))}
-               </ul>
-            </nav>
-         </div>
+               </div>
+            </div>
+         </section>
+
+         {/* CTA Section */}
+         <section className="relative bg-black text-white">
+            <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+               <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 items-center">
+                  <div>
+                     <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                        Start Building Your Digital Empire Today
+                     </h2>
+                     <p className="mt-6 text-lg text-gray-300">
+                        Join thousands of creators who are building successful digital businesses
+                        with Markely.
+                     </p>
+                     <div className="mt-10 flex items-center gap-x-6">
+                        <Button
+                           size="lg"
+                           className="bg-white text-black hover:bg-gray-100"
+                        >
+                           Create Your Store
+                           <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                     </div>
+                  </div>
+                  <div className="relative">
+                     <img
+                        src="/api/placeholder/500/300"
+                        alt="Creator dashboard"
+                        className="rounded-xl shadow-2xl border border-gray-800"
+                     />
+                  </div>
+               </div>
+            </div>
+         </section>
+
+         {/* Stats Section */}
+         <section className="border-y border-gray-200">
+            <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                  {stats.map((stat) => (
+                     <div
+                        key={stat.label}
+                        className="text-center"
+                     >
+                        <p className="text-4xl font-bold">{stat.value}</p>
+                        <p className="mt-2 text-gray-600">{stat.label}</p>
+                     </div>
+                  ))}
+               </div>
+            </div>
+         </section>
+
+         {/* Footer */}
+         <footer className="bg-black text-white">
+            <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                  {footerSections.map((section) => (
+                     <div key={section.title}>
+                        <h3 className="text-lg font-semibold">{section.title}</h3>
+                        <ul className="mt-4 space-y-2">
+                           {section.links.map((link) => (
+                              <li
+                                 key={link}
+                                 className="text-gray-300 hover:text-white cursor-pointer"
+                              >
+                                 {link}
+                              </li>
+                           ))}
+                        </ul>
+                     </div>
+                  ))}
+               </div>
+               <div className="mt-12 border-t border-gray-800 pt-8 text-center text-gray-400">
+                  <p>© 2025 Markely. All rights reserved.</p>
+               </div>
+            </div>
+         </footer>
       </div>
    );
 }

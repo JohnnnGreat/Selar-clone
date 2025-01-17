@@ -2,6 +2,7 @@ const express = require("express");
 const connectDatabase = require("./lib/database");
 const authRoutes = require("./routes/Auth");
 const productRoutes = require("./routes/Product");
+const dotenv = require("dotenv").config();
 
 const cors = require("cors");
 

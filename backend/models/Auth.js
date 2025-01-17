@@ -30,6 +30,10 @@ const AuthSchema = mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "AccountInformation",
    },
+   isVerified: {
+      type: Boolean,
+      default: false,
+   },
    password: {
       type: String,
       required: true,

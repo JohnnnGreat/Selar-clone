@@ -1,6 +1,6 @@
 import React, { useState, useTransition } from "react";
 import "../styles/auth.scss";
-import { Link } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
 import { useForm } from "react-hook-form";
 import { registerSchema } from "~/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,6 +33,9 @@ const Register = () => {
    const [transition, startTransition] = useTransition();
 
    const isSubmitting = transition;
+
+   const navigate = useNavigate();
+
    async function onSubmit(values: z.infer<typeof registerSchema>) {
       startTransition(async () => {
          try {
@@ -45,6 +48,8 @@ const Register = () => {
             const { data } = await ApiRequest.post("/authorization/register", body);
 
             toast.success(data.status);
+
+            navigate("/login");
          } catch (error) {
             if (error instanceof AxiosError) {
                toast.error(error.response?.data.message);
