@@ -5,6 +5,8 @@ import "./tailwind.css";
 import "quill/dist/quill.core.css";
 import { Plus, Minus, ShoppingCart } from "lucide-react";
 import { Button } from "./components/ui/button";
+import RootHeader from "./components/Header/rootheader.client";
+import { ClientOnly } from "remix-utils/client-only";
 
 export const links: LinksFunction = () => [
    { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -43,14 +45,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
    return (
       <div>
-         <header className="flex justify-between max-w-[1100px] mx-auto">
-            <h1>Markely</h1>
-            <div>
-               <Button variant="outline">
-                  <ShoppingCart></ShoppingCart>
-               </Button>
-            </div>
-         </header>
+         <ClientOnly>{() => <RootHeader />}</ClientOnly>
          <Outlet />{" "}
          <Toaster
             position="top-center"

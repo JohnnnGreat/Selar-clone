@@ -28,7 +28,7 @@ const UploadImage = ({ url }: { url: string | undefined }) => {
       formData.append("file", file);
 
       const debouncedFunction = _.debounce(() => {
-         console.log("debounced file");
+      
          setImageUploading(true);
          storage
             .createFile("67409170002d4b8b36b4", fileId, file)

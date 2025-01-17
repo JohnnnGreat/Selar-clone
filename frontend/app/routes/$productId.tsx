@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useLoaderData } from "@remix-run/react";
 import { Product } from "~/actions/products";
@@ -10,7 +10,8 @@ import { Plus, Minus, ShoppingCart } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { ClientOnly } from "remix-utils/client-only";
 import useCartStore from "~/actions/carts";
-import { add } from "lodash";
+
+import _ from "lodash";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
    try {
@@ -38,7 +39,7 @@ const ProductId = () => {
 
    const [productNumber, setProductNumber] = React.useState(1);
    const { carts, addCart } = useCartStore((state) => state);
-
+   const [openCart, setOpenCart] = React.useState(false);
    console.log(carts);
    if (status == "200") {
       return (
@@ -113,22 +114,23 @@ const ProductId = () => {
                   <ClientOnly>
                      {() => {
                         return (
-                           <div className="pt-4">
-                              <Button
-                                 className="w-full"
-                                 size="lg"
-                                 onClick={() => {
-                                    addCart(product, productNumber);
-                                 }}
-                              >
-                                 <ShoppingCart className="mr-2 h-4 w-4" />
-                                 Add to Cart
-                              </Button>
-                           </div>
+                           <>
+                              <div className="pt-4">
+                                 <Button
+                                    className="w-full"
+                                    size="lg"
+                                    onClick={() => {
+                                       addCart(product, productNumber);
+                                    }}
+                                 >
+                                    <ShoppingCart className="mr-2 h-4 w-4" />
+                                    Add to Cart
+                                 </Button>
+                              </div>
+                           </>
                         );
                      }}
                   </ClientOnly>
-                  {/* Add to Cart Button */}
                </Card>
             </div>
          </div>
