@@ -66,7 +66,7 @@ const updateProduct = async (req, res) => {
 
 const getProductById = async (req, res) => {
   try {
-    console.log("user", req.user);
+    console.log("red");
     const product = await Product.findOne({ productId: req.params.id });
 
     if (!product) {
