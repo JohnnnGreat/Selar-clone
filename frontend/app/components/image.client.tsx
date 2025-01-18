@@ -12,8 +12,10 @@ const client = new Client()
 
 const storage = new Storage(client);
 
-const UploadImage = () => {
-   const [imageUrl, setImageUrl] = React.useState("");
+const UploadImage = ({ url }: { url: string | undefined }) => {
+   const [imageUrl, setImageUrl] = React.useState(url);
+
+   console.log(url);
    const [imageUploading, setImageUploading] = React.useState(false);
    const { product, setProduct } = useProductInformation((state) => state);
 
@@ -26,7 +28,7 @@ const UploadImage = () => {
       formData.append("file", file);
 
       const debouncedFunction = _.debounce(() => {
-         console.log("debounced file");
+      
          setImageUploading(true);
          storage
             .createFile("67409170002d4b8b36b4", fileId, file)
@@ -93,4 +95,4 @@ const UploadImage = () => {
    );
 };
 
-export default UploadImage;
+export default React.memo(UploadImage);

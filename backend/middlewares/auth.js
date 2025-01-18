@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const SECRET_KEY = "12RJKRGIKUEJ09E21JP;W239R";
 // Middleware function to verify a token
 function authenticateToken(req, res, next) {
+
    // Get the token from the Authorization header
    const authHeader = req.headers["authorization"];
    const token = authHeader && authHeader.split(" ")[1]; // Bearer token

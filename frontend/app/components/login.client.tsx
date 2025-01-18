@@ -21,6 +21,7 @@ import ApiRequest from "~/lib/axios";
 import { Loader } from "lucide-react";
 import { useCookies } from "react-cookie";
 import Cookies from "js-cookie";
+import useUserInformation from "~/actions/user";
 
 const LoginComponent = () => {
    const form = useForm<z.infer<typeof loginSchema>>({
@@ -29,8 +30,8 @@ const LoginComponent = () => {
    });
    const navigate = useNavigate();
    const [transition, startTransition] = useTransition();
-   const [cookies, setCookie, removeCookie] = useCookies(["authentication"]);
 
+   const { login } = useUserInformation((state) => state);
    const isSubmitting = transition;
    async function onSubmit(values: z.infer<typeof loginSchema>) {
       startTransition(async () => {
@@ -41,7 +42,14 @@ const LoginComponent = () => {
             };
             const { data } = await ApiRequest.post("/authorization/login", body);
 
-            localStorage.setItem("AUTH_USER", data.user.token);
+            Cookies.set("auth-tokend", data.user.token, {
+               expires: 30,
+               secure: process.env.NODE_ENV === "production",
+               sameSite: "lax",
+            });
+
+            login(data?.user);
+
             toast.success(data.status);
 
             navigate("/me/dashboard");
@@ -58,7 +66,7 @@ const LoginComponent = () => {
    return (
       <div className="login">
          <div className="login__wrapper">
-            <h1>Create your Marketly Account</h1>
+            <h1>Login to your Marketly Account</h1>
             <p className="login__desc">
                Already have an accont? <Link to="/register">Create new account</Link>
             </p>
@@ -103,26 +111,10 @@ const LoginComponent = () => {
                      )}
                   />
 
-                  <div className="flex gap-3">
-                     <Input
-                        placeholder="**********"
-                        className="size-6 bg-[#5a0b4d]"
-                        type="checkbox"
-                        onChange={(e) => setIsConsentAgreed(e.target.checked)}
-                     />
-                     <p className="text-small">
-                        Signing up for a Selar account means you agree to our privacy policy and
-                        terms & conditions
-                     </p>
-                  </div>
                   <Button
                      className="w-full"
                      type="submit"
-                     disabled={
-                        isSubmitting ||
-                        !isConsentAgreed ||
-                        Object.keys(form.formState.errors).length > 0
-                     }
+                     disabled={isSubmitting || Object.keys(form.formState.errors).length > 0}
                   >
                      {isSubmitting && (
                         <Loader

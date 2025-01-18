@@ -1,12 +1,30 @@
-import { Link, Outlet } from "@remix-run/react";
+import { Link, Outlet, redirect } from "@remix-run/react";
 import DashboardHeader from "../components/Header";
 import "../styles/dashboard.scss";
+import { ClientOnly } from "remix-utils/client-only";
 
+export const loader = ({ request }: any) => {
+   const cookieHeader = request.headers.get("Cookie");
+   const authToken = cookieHeader
+      ?.split(";")
+      .find((cookie) => cookie.trim().startsWith("auth-tokend="))
+      ?.split("=")[1];
+
+   if (!authToken) {
+      redirect("/login");
+   }
+
+   return Response.json({ ok: true });
+};
 export default function DashboardLayout() {
    return (
       <>
-         {/* Dashboard Header */}
-         <DashboardHeader />
+         <ClientOnly>
+            {() => {
+               return <DashboardHeader />;
+            }}
+         </ClientOnly>
+
          {/* Main Content Area */}
          <main className="flex-1  min-h-screen">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

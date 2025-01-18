@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 export interface Product {
+   productId: string | undefined;
    imageUrl: string;
    title?: string;
    salePrice: string;
@@ -18,6 +19,8 @@ export interface Product {
    preOrderProduct: boolean;
    strikePrice: boolean;
    isRedirect: boolean;
+   crossSell: any[];
+   upSell: any[];
 }
 
 interface productActions {
@@ -25,6 +28,7 @@ interface productActions {
    product: Product | null;
    setProduct: (options: Partial<Product>) => void;
    updateProduct: (options: Partial<Product>) => void;
+   nullifyProduct: () => void;
 }
 const useProductInformation = create<productActions>()(
    immer((set) => ({
@@ -43,6 +47,12 @@ const useProductInformation = create<productActions>()(
          });
       },
       updateProduct: (option: Partial<Product>) => {},
+
+      nullifyProduct: () => {
+         set((state) => {
+            state.product = null;
+         });
+      },
    })),
 );
 

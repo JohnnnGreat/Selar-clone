@@ -3,6 +3,10 @@ import type { LinksFunction } from "@remix-run/node";
 import { Toaster, toast } from "sonner";
 import "./tailwind.css";
 import "quill/dist/quill.core.css";
+import { Plus, Minus, ShoppingCart } from "lucide-react";
+import { Button } from "./components/ui/button";
+import RootHeader from "./components/Header/rootheader.client";
+import { ClientOnly } from "remix-utils/client-only";
 
 export const links: LinksFunction = () => [
    { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -41,6 +45,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
    return (
       <div>
+         <ClientOnly>{() => <RootHeader />}</ClientOnly>
          <Outlet />{" "}
          <Toaster
             position="top-center"

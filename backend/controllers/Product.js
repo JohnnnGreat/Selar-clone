@@ -29,7 +29,16 @@ const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params.id;
     const deleteProduct = await Product.findOneAndDelete({ productId: id });
+    try {
+      const { id } = req.params.id;
+      const deleteProduct = await Product.findOneAndDelete({ productId: id });
 
+      return res.status(200).json({
+        message: "Product Deleted Successfully",
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Error deleting product" });
+    }
     return res.status(200).json({
       message: "Product Deleted Successfully",
     });
@@ -57,7 +66,7 @@ const updateProduct = async (req, res) => {
 
 const getProductById = async (req, res) => {
   try {
-    console.log(req.params);
+    console.log("user", req.user);
     const product = await Product.findOne({ productId: req.params.id });
 
     if (!product) {
@@ -70,11 +79,91 @@ const getProductById = async (req, res) => {
   }
 };
 
+const getUserProducts = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const products = await Product.find({ uploadedBy: userId });
+
+    return res.status(200).json(products);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error Getting User Products" });
+  }
+};
+
+const getProductsByFilter = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const { productName, category, productType } = req.query;
+
+    const queryObj = {
+      uploadedBy: userId,
+    };
+
+    if (productName) {
+      queryObj.title = { $regex: productName, $options: "i" }; // Case-insensitive search
+    }
+
+    if (category) {
+      queryObj.category = Array.isArray(category)
+        ? { $in: category }
+        : category;
+    }
+
+    if (productType) {
+      queryObj.productType = Array.isArray(productType)
+        ? { $in: productType }
+        : productType;
+    }
+
+    const query = Product.find(queryObj);
+
+    const products = await query.exec();
+
+    console.log(query, products);
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      data: products,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error getting products by filter",
+    });
+  }
+};
+
+const getProductMain = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findOne({
+      productId: id,
+    });
+
+    return res.status(200).json({
+      message: "Product Fetched Successfully",
+      product,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error getting product",
+    });
+  }
+};
 module.exports = {
   createProduct,
   getProductById,
   updateProduct,
   deleteProduct,
+  getProductMain,
+  getUserProducts,
+  getProductsByFilter,
 };
 
 function generateRandomString() {
