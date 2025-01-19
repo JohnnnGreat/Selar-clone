@@ -2,7 +2,7 @@ import { json, LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { ClientOnly } from "remix-utils/client-only";
 import ProductForm from "~/components/productform";
-import { createServerApi, ServerApiRequest } from "~/lib/s_axios";
+import { createServerApi } from "~/lib/s_axios";
 import stylesheetQuill from "react-quill/dist/quill.snow.css?url";
 import { CheckCircle, Copy, ExternalLink } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -59,7 +59,7 @@ export default function EditProduct() {
             </div>
          </div>
          <Alert
-            variant="success"
+            variant="default"
             className="bg-green-50 border-green-200 mt-[1rem] max-w-[1200px] mx-auto"
          >
             <CheckCircle className="h-5 w-5 text-green-600" />

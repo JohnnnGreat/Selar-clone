@@ -19,6 +19,7 @@ import { DataTable } from "~/components/Table/data-table.client";
 import { columns } from "~/components/Table/columns.client";
 import { ClientOnly } from "remix-utils/client-only";
 import DashboardHeader from "~/components/Header";
+import { Product } from "~/actions/products";
 
 export const productTypes = [
    "All",
@@ -60,6 +61,7 @@ export const loader = async ({ request }: any) => {
    }
 };
 
+// @ts-ignore
 const Products = () => {
    const [filters, setFilters] = useState({
       productName: "",
@@ -101,7 +103,11 @@ const Products = () => {
       }
    };
 
-   const { products } = useLoaderData();
+   interface ProductLoader {
+      products: Product;
+   }
+
+   const { products } = useLoaderData<ProductLoader>();
 
    return (
       <>
@@ -116,7 +122,6 @@ const Products = () => {
                   Add Product
                </Link>
             </div>
-
             <Card>
                <CardContent className="pt-6">
                   <form
