@@ -12,12 +12,14 @@ import {
    SelectTrigger,
    SelectValue,
 } from "~/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "~/components/ui/dialog";
 import { Button } from "~/components/ui/button";
 import useShowloveStore from "~/actions/showlove";
 import { Label } from "~/components/ui/label";
 import { toast } from "sonner";
 import { Textarea } from "~/components/ui/textarea";
 import ApiRequest from "~/lib/axios";
+import { useNavigate } from "@remix-run/react";
 
 const ShowLoveCreate = () => {
    return (
@@ -287,47 +289,154 @@ const StepSix = () => {
 const StepSeven = () => {
    const [isConsent, setIsConsent] = React.useState(false);
    const { showLove } = useShowloveStore((state) => state);
+   const [showLoveUrl, setShowLoveUrl] = React.useState("");
+   const [creatingShowLove, setCreatingShowLove] = React.useState(false);
+   const [showDialog, setShowDialog] = React.useState(false);
+
+   const navigate = useNavigate();
 
    const handleSubmit = async () => {
+      setCreatingShowLove(true);
+
       if (!showLove.displayName || !showLove.color || !showLove.heading) {
          toast.error("Make sure all required inputs are filled");
+         setCreatingShowLove(false);
          return;
       }
 
-      const response = await ApiRequest.post("/showlove/create", showLove);
+      toast.warning(
+         "Please be sure this profile you are creating DOES NOT IMPERSONATE another person or entity, else this profile will be deleted and all payments reversed.",
+         {
+            action: {
+               label: "Understand",
+               onClick: async () => {
+                  try {
+                     const { data } = await ApiRequest.post("/showlove/create", showLove);
+                     toast.success(data?.message);
+                     const savedShowloveId = data?.savedShowLove._id;
+                     const url = `http://localhost:5173/showlove/${savedShowloveId}`;
+                     setShowLoveUrl(url);
+                     setShowDialog(true);
+                  } catch (error) {
+                     console.log(error);
+                     toast.error("An error has occurred while creating your showlove");
+                  } finally {
+                     setCreatingShowLove(false);
+                  }
+               },
+            },
+         },
+      );
+   };
 
-      console.log(response);
+   const handleCopyLink = () => {
+      navigator.clipboard.writeText(showLoveUrl);
+      toast.success("Link copied to clipboard!");
    };
 
    return (
-      <div className="p-4 md:p-8 bg-white rounded-[20px] mt-[2rem]">
-         <Header
-            text="Confirmation *"
-            pos={7}
-         />
-
-         <div className="rounded-md flex items-start md:items-center mt-8 gap-4">
-            <Input
-               type="checkbox"
-               className="w-4 mt-1 md:mt-0"
-               onChange={(e) => {
-                  setIsConsent(e.target.checked);
-               }}
+      <>
+         <div className="p-4 md:p-8 bg-white rounded-[20px] mt-[2rem]">
+            <Header
+               text="Confirmation *"
+               pos={7}
             />
-            <p className="text-sm md:text-base">
-               I agree with our terms and conditions and privacy policy.
-            </p>
+
+            <div className="rounded-md flex items-start md:items-center mt-8 gap-4">
+               <Input
+                  type="checkbox"
+                  className="w-4 mt-1 md:mt-0"
+                  onChange={(e) => {
+                     setIsConsent(e.target.checked);
+                  }}
+               />
+               <p className="text-sm md:text-base">
+                  I agree with our terms and conditions and privacy policy.
+               </p>
+            </div>
+
+            {isConsent && (
+               <Button
+                  onClick={handleSubmit}
+                  className="w-full mt-4"
+                  disabled={creatingShowLove}
+               >
+                  {creatingShowLove ? "Creating..." : "Start Receiving Love"}
+               </Button>
+            )}
          </div>
 
-         {isConsent && (
-            <Button
-               onClick={handleSubmit}
-               className="w-full mt-4"
-            >
-               Start Receiving Love
-            </Button>
-         )}
-      </div>
+         <Dialog
+            open={showDialog}
+            onOpenChange={setShowDialog}
+         >
+            <DialogContent className="sm:max-w-md">
+               <DialogHeader>
+                  <DialogTitle className="text-center">
+                     Congratulations! Your page has been created.
+                  </DialogTitle>
+               </DialogHeader>
+               <div className="flex flex-col items-center space-y-6 py-4">
+                  <div className="text-center text-gray-500">
+                     <p>Share via:</p>
+                     <div className="mt-4 flex justify-center gap-4">
+                        <Button
+                           variant="outline"
+                           size="icon"
+                           className="rounded-full"
+                           onClick={() => {
+                              window.open(
+                                 `https://www.instagram.com/share?url=${showLoveUrl}`,
+                                 "_blank",
+                              );
+                           }}
+                        >
+                           <Instagram className="h-4 w-4" />
+                        </Button>
+                     </div>
+                  </div>
+
+                  <div className="w-full space-y-2">
+                     <Label>View public page:</Label>
+                     <div className="flex items-center space-x-2">
+                        <Input
+                           value={showLoveUrl}
+                           readOnly
+                           className="flex-1"
+                        />
+                        <Button
+                           variant="outline"
+                           onClick={handleCopyLink}
+                        >
+                           Copy
+                        </Button>
+                     </div>
+                  </div>
+
+                  <div className="flex w-full gap-4">
+                     <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => {
+                           setShowDialog(false);
+                           navigate("/dashboard");
+                        }}
+                     >
+                        Go to Dashboard
+                     </Button>
+                     <Button
+                        className="flex-1"
+                        onClick={() => {
+                           window.open(showLoveUrl, "_blank");
+                        }}
+                     >
+                        View Page
+                     </Button>
+                  </div>
+               </div>
+            </DialogContent>
+         </Dialog>
+      </>
    );
 };
 

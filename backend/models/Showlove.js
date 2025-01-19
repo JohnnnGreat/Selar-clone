@@ -7,7 +7,7 @@ const IMSSchema = new mongoose.Schema({
 });
 
 const ShowLoveSchema = new mongoose.Schema({
-   imageUrl: { type: String, required: true },
+   imageUrl: { type: String },
    uploadedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Auth",

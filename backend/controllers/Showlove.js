@@ -7,18 +7,7 @@ const createShowLove = async (req, res) => {
       const { imageUrl, displayName, bio, showLoveLink, color, heading, customNote, socialMedia } =
          req.body;
 
-      if (
-         !imageUrl ||
-         !displayName ||
-         !bio ||
-         !showLoveLink ||
-         !color ||
-         !heading ||
-         !customNote ||
-         !socialMedia
-      ) {
-         return res.status(400).json({ message: "All fields are required" });
-      }
+      console.log(req.body);
 
       // Create a new instance of ShowLove
       const newShowLove = new ShowLove({
@@ -39,7 +28,7 @@ const createShowLove = async (req, res) => {
       // Respond with the created document
       res.status(201).json({
          message: "ShowLove created successfully",
-         data: savedShowLove,
+         savedShowLove,
       });
    } catch (error) {
       console.error("Error creating ShowLove:", error);
