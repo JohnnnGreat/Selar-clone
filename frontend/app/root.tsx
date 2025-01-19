@@ -45,8 +45,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
    return (
       <div>
-         <ClientOnly>{() => <RootHeader />}</ClientOnly>
-         <Outlet />{" "}
+         {/* <ClientOnly>{() => <RootHeader />}</ClientOnly> */}
+         <Outlet />
          <Toaster
             position="top-center"
             richColors

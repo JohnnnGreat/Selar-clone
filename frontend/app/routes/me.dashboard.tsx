@@ -113,7 +113,7 @@ const Dashboard = () => {
          {!isVerified && (
             <Alert
                variant="destructive"
-               className="bg-red-50 border-red-200 mt-[1rem]"
+               className="bg-red-50 border-red-200 mt-[1rem] max-w-[1200px] mx-auto"
             >
                <CheckCircle className="h-5 w-5 text-red-600" />
                <AlertTitle className="text-red-800 font-semibold">Account not verified</AlertTitle>
@@ -138,7 +138,7 @@ const Dashboard = () => {
             </Alert>
          )}
 
-         <div className="p-8 max-w-7xl mx-auto">
+         <div className="py-8 max-w-[1200px] mx-auto">
             {TOTAL_PRODUCT !== 0 ? (
                <div>
                   <h1 className="text-3xl font-bold mb-8">Creator Dashboard</h1>

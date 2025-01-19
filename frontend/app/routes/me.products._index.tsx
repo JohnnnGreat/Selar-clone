@@ -13,11 +13,12 @@ import {
 import { Button } from "~/components/ui/button";
 import { Search, Filter, Plus } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
-import { Link, redirect, useLoaderData, useNavigate } from "@remix-run/react";
+import { Link, Outlet, redirect, useLoaderData, useNavigate } from "@remix-run/react";
 import { toast } from "sonner";
 import { DataTable } from "~/components/Table/data-table.client";
 import { columns } from "~/components/Table/columns.client";
 import { ClientOnly } from "remix-utils/client-only";
+import DashboardHeader from "~/components/Header";
 
 export const productTypes = [
    "All",
@@ -103,99 +104,102 @@ const Products = () => {
    const { products } = useLoaderData();
 
    return (
-      <div className="p-6 mx-auto space-y-6">
-         <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold ">All Products</h1>
-            <Link
-               to="/me/products/select"
-               className="gap-2 flex border py-2 px-4 items-center rounded"
-            >
-               <Plus className="h-4 w-4" />
-               Add Product
-            </Link>
-         </div>
-
-         <Card>
-            <CardContent className="pt-6">
-               <form
-                  onSubmit={handleSubmit}
-                  className="grid grid-cols-1 md:grid-cols-4 gap-4"
+      <>
+         <div className="p-6 mx-auto max-w-[1200px] space-y-6">
+            <div className="flex justify-between items-center">
+               <h1 className="text-2xl font-bold ">All Products</h1>
+               <Link
+                  to="/me/products/select"
+                  className="gap-2 flex border py-2 px-4 items-center rounded"
                >
-                  <div className="space-y-2">
-                     <Label htmlFor="productName">Product Name</Label>
-                     <Input
-                        id="productName"
-                        placeholder="Search by product name..."
-                        value={filters.productName}
-                        onChange={handleInputChange("productName")}
-                        onKeyPress={handleKeyPress}
-                        className="w-full"
-                     />
-                  </div>
+                  <Plus className="h-4 w-4" />
+                  Add Product
+               </Link>
+            </div>
 
-                  <div className="space-y-2">
-                     <Label htmlFor="productType">Product Type</Label>
-                     <Select
-                        value={filters.productType}
-                        onValueChange={handleTypeChange}
-                     >
-                        <SelectTrigger
-                           id="productType"
+            <Card>
+               <CardContent className="pt-6">
+                  <form
+                     onSubmit={handleSubmit}
+                     className="grid grid-cols-1 md:grid-cols-4 gap-4"
+                  >
+                     <div className="space-y-2">
+                        <Label htmlFor="productName">Product Name</Label>
+                        <Input
+                           id="productName"
+                           placeholder="Search by product name..."
+                           value={filters.productName}
+                           onChange={handleInputChange("productName")}
+                           onKeyPress={handleKeyPress}
                            className="w-full"
+                        />
+                     </div>
+
+                     <div className="space-y-2">
+                        <Label htmlFor="productType">Product Type</Label>
+                        <Select
+                           value={filters.productType}
+                           onValueChange={handleTypeChange}
                         >
-                           <SelectValue placeholder="Select product type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                           {productTypes.map((type) => (
-                              <SelectItem
-                                 key={type}
-                                 value={type}
-                              >
-                                 {type}
-                              </SelectItem>
-                           ))}
-                        </SelectContent>
-                     </Select>
-                  </div>
+                           <SelectTrigger
+                              id="productType"
+                              className="w-full"
+                           >
+                              <SelectValue placeholder="Select product type" />
+                           </SelectTrigger>
+                           <SelectContent>
+                              {productTypes.map((type) => (
+                                 <SelectItem
+                                    key={type}
+                                    value={type}
+                                 >
+                                    {type}
+                                 </SelectItem>
+                              ))}
+                           </SelectContent>
+                        </Select>
+                     </div>
 
-                  <div className="space-y-2">
-                     <Label htmlFor="category">Product Category</Label>
-                     <Input
-                        id="category"
-                        placeholder="Enter product category"
-                        value={filters.category}
-                        onChange={handleInputChange("category")}
-                        onKeyPress={handleKeyPress}
-                        className="w-full"
-                     />
-                  </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="category">Product Category</Label>
+                        <Input
+                           id="category"
+                           placeholder="Enter product category"
+                           value={filters.category}
+                           onChange={handleInputChange("category")}
+                           onKeyPress={handleKeyPress}
+                           className="w-full"
+                        />
+                     </div>
 
-                  <div className="flex items-end">
-                     <Button
-                        type="submit"
-                        className="w-full gap-2"
-                     >
-                        <Search className="h-4 w-4" />
-                        Search Products
-                     </Button>
-                  </div>
-               </form>
-            </CardContent>
-         </Card>
+                     <div className="flex items-end">
+                        <Button
+                           type="submit"
+                           className="w-full gap-2"
+                        >
+                           <Search className="h-4 w-4" />
+                           Search Products
+                        </Button>
+                     </div>
+                  </form>
+               </CardContent>
+            </Card>
 
-         <Card>
-            <ClientOnly>
-               {() => {
-                  return (
-                     <DataTable
-                        columns={columns}
-                        data={products}
-                     />
-                  );
-               }}
-            </ClientOnly>
-         </Card>
-      </div>
+            <Card>
+               <ClientOnly>
+                  {() => {
+                     return (
+                        <DataTable
+                           columns={columns}
+                           data={products}
+                        />
+                     );
+                  }}
+               </ClientOnly>
+            </Card>
+            <Outlet />
+         </div>
+      </>
    );
 };
 

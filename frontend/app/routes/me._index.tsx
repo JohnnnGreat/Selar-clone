@@ -11,7 +11,9 @@ export const loader = ({ request }: any) => {
       ?.split("=")[1];
 
    if (!authToken) {
-      redirect("/login");
+      return redirect("/login");
+   } else {
+      return redirect("/me/dashboard");
    }
 
    return Response.json({ ok: true });
@@ -26,8 +28,8 @@ export default function DashboardLayout() {
          </ClientOnly>
 
          {/* Main Content Area */}
-         <main className="flex-1  min-h-screen">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+         <main className="flex-1 min-h-screen">
+            <div className="max-w-[1000px!important]  mx-auto px-4 sm:px-6 lg:px-8 py-6">
                <Outlet />
             </div>
          </main>

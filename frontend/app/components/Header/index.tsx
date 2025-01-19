@@ -23,7 +23,7 @@ const DashboardHeader = () => {
                      href="/"
                      className="flex items-center"
                   >
-                     MArketly
+                     Marketly
                   </a>
                </div>
 

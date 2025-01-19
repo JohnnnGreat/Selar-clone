@@ -56,7 +56,7 @@ const sideConstant = [
    },
    {
       title: "Show Love",
-      link: "/showlove",
+      link: "/me/showlove/create",
       icon: Heart,
    },
    {
