@@ -17,6 +17,7 @@ import useShowloveStore from "~/actions/showlove";
 import { Label } from "~/components/ui/label";
 import { toast } from "sonner";
 import { Textarea } from "~/components/ui/textarea";
+import ApiRequest from "~/lib/axios";
 
 const ShowLoveCreate = () => {
    return (
@@ -287,11 +288,15 @@ const StepSeven = () => {
    const [isConsent, setIsConsent] = React.useState(false);
    const { showLove } = useShowloveStore((state) => state);
 
-   const handleSubmit = () => {
+   const handleSubmit = async () => {
       if (!showLove.displayName || !showLove.color || !showLove.heading) {
          toast.error("Make sure all required inputs are filled");
          return;
       }
+
+      const response = await ApiRequest.post("/showlove/create", showLove);
+
+      console.log(response);
    };
 
    return (
