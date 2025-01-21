@@ -3,6 +3,7 @@ import type { LinksFunction } from "@remix-run/node";
 import { Toaster, toast } from "sonner";
 import "./tailwind.css";
 import "quill/dist/quill.core.css";
+import '../app/styles/dashboard.scss'
 import { Plus, Minus, ShoppingCart } from "lucide-react";
 import { Button } from "./components/ui/button";
 import RootHeader from "./components/Header/rootheader.client";

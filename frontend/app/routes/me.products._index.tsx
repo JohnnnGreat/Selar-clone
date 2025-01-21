@@ -58,8 +58,11 @@ export const loader = async ({ request }: any) => {
       if (error instanceof AxiosError) {
          return new Error(error?.message);
       }
+
+      return Response.json({status:404})
    }
 };
+
 
 // @ts-ignore
 const Products = () => {

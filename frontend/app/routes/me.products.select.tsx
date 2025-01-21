@@ -12,6 +12,7 @@ import {
    DollarSign,
 } from "lucide-react";
 import { Link } from "@remix-run/react";
+import '../tailwind.css'
 
 
 const productFeatures = [

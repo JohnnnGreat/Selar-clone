@@ -1,4 +1,4 @@
-import { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import { LinksFunction, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
 import stylesheetQuill from "react-quill/dist/quill.snow.css?url";
@@ -12,7 +12,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
    const productType = url.searchParams.get("type");
 
    if (!productType) {
-      throw new Response("Invalid product type", { status: 400 });
+      return redirect('/me/products')
    }
    return Response.json({ productType });
 }
